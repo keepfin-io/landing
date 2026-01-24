@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "start": "serve dist -p 4321"
+    "start": "npx serve dist -p 4321"
   },
   "engines": {
     "node": ">=20.0.0"
