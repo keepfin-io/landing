@@ -7,6 +7,9 @@ import react from '@astrojs/react';
 // https://astro.build/config
 export default defineConfig({
   vite: {
+    preview: {
+      allowedHosts: true,
+    },
     plugins: [tailwindcss()]
   },
 
