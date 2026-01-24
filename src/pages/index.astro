@@ -1,18 +1,4 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import Features from '../components/Features';
-import Footer from '../components/Footer';
+// Redirect to default language
+return Astro.redirect('/tr');
 ---
-
-<Layout>
-    <main class="min-h-screen flex flex-col">
-        <Navbar client:load />
-        <Hero client:load />
-        <Features client:load />
-        <div class="mt-auto">
-            <Footer client:load />
-        </div>
-    </main>
-</Layout>

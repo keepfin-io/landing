@@ -1,40 +1,55 @@
 import React from 'react';
 import { LineChart, Globe, Wallet, ShieldCheck } from "lucide-react";
 
-const features = [
-  {
-    icon: <Globe className="h-10 w-10 text-primary" />,
-    title: "Çoklu Varlık Yönetimi",
-    description: "Hisse senetleri, ETF'ler, Kripto paralar ve Nakit. Tüm varlık sınıflarını tek bir portföyde birleştirin."
-  },
-  {
-    icon: <LineChart className="h-10 w-10 text-primary" />,
-    title: "Derinlemesine Analiz",
-    description: "Portföy performansınızı, sektörel dağılımınızı ve risk analizinizi detaylı grafiklerle inceleyin."
-  },
-  {
-    icon: <Wallet className="h-10 w-10 text-primary" />,
-    title: "Net Değer Takibi",
-    description: "Varlıklarınız ve borçlarınız arasındaki dengeyi kurun. Kişisel net değerinizin zamanla büyümesini izleyin."
-  },
-  {
-    icon: <ShieldCheck className="h-10 w-10 text-primary" />,
-    title: "Gizlilik Odaklı",
-    description: "Verileriniz sizin kontrolünüzde. Anonim mod ve yerel şifreleme ile finansal gizliliğinizi koruyun."
+interface FeaturesProps {
+  labels: {
+    title: string;
+    subtitle: string;
+    f1Title: string;
+    f1Desc: string;
+    f2Title: string;
+    f2Desc: string;
+    f3Title: string;
+    f3Desc: string;
+    f4Title: string;
+    f4Desc: string;
   }
-];
+}
 
-export default function Features() {
+export default function Features({ labels }: FeaturesProps) {
+  const features = [
+    {
+      icon: <Globe className="h-10 w-10 text-primary" />,
+      title: labels.f1Title,
+      description: labels.f1Desc
+    },
+    {
+      icon: <LineChart className="h-10 w-10 text-primary" />,
+      title: labels.f2Title,
+      description: labels.f2Desc
+    },
+    {
+      icon: <Wallet className="h-10 w-10 text-primary" />,
+      title: labels.f3Title,
+      description: labels.f3Desc
+    },
+    {
+      icon: <ShieldCheck className="h-10 w-10 text-primary" />,
+      title: labels.f4Title,
+      description: labels.f4Desc
+    }
+  ];
+
   return (
-    <section className="py-24">
+    <section id="features" className="py-24">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
-              Neden Keepfind?
+              {labels.title}
             </h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Paranızı yönetmenin en kolay ve güvenli yolu.
+              {labels.subtitle}
             </p>
           </div>
         </div>

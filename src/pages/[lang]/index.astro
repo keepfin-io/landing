@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar';
+import Hero from '../../components/Hero';
+import Features from '../../components/Features';
+import Footer from '../../components/Footer';
+import { languages, ui, defaultLang } from '../../i18n/ui';
+
+export async function getStaticPaths() {
+  return Object.keys(languages).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+
+// Helper to get translations for the current lang
+const t = (key: keyof typeof ui[typeof defaultLang]) => {
+  return ui[lang as keyof typeof ui][key] || ui[defaultLang][key];
+}
+
+// Construct label objects for components
+const navbarLabels = {
+  features: t('nav.features'),
+  login: t('nav.login'),
+};
+
+const heroLabels = {
+  title1: t('hero.title.1'),
+  title2: t('hero.title.2'),
+  desc: t('hero.desc'),
+  cta: t('hero.cta'),
+  more: t('hero.more'),
+  badgeInstant: t('hero.badge.instant'),
+  badgeAnalysis: t('hero.badge.analysis'),
+};
+
+const featuresLabels = {
+  title: t('features.title'),
+  subtitle: t('features.subtitle'),
+  f1Title: t('feature.1.title'),
+  f1Desc: t('feature.1.desc'),
+  f2Title: t('feature.2.title'),
+  f2Desc: t('feature.2.desc'),
+  f3Title: t('feature.3.title'),
+  f3Desc: t('feature.3.desc'),
+  f4Title: t('feature.4.title'),
+  f4Desc: t('feature.4.desc'),
+};
+
+const footerLabels = {
+  copyright: t('footer.copyright'),
+  privacy: t('footer.privacy'),
+  terms: t('footer.terms'),
+  contact: t('footer.contact'),
+};
+---
+
+<Layout title={lang === 'tr' ? 'Keepfind - Yatırımlarınızı Yönetin' : 'Keepfind - Manage Your Investments'} lang={lang}>
+    <main class="min-h-screen flex flex-col">
+        <Navbar client:load labels={navbarLabels} lang={lang as 'tr' | 'en'} />
+        <Hero client:load labels={heroLabels} />
+        <Features client:load labels={featuresLabels} />
+        <div class="mt-auto">
+            <Footer client:load labels={footerLabels} />
+        </div>
+    </main>
+</Layout>
