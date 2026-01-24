@@ -9,6 +9,9 @@
     "astro": "astro",
     "start": "astro preview --host"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
     "@radix-ui/react-slot": "^1.2.4",
