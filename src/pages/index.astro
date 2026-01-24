@@ -1,4 +1,13 @@
----
-// Redirect to default language
-return Astro.redirect('/tr');
----
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0;url=/tr" />
+    <script>
+        window.location.href = "/tr";
+    </script>
+    <title>Redirecting...</title>
+</head>
+<body>
+</body>
+</html>
