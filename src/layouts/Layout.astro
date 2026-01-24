@@ -3,10 +3,17 @@ import "../styles/global.css";
 
 interface Props {
 	title: string;
+	description?: string;
 	lang?: string;
 }
 
-const { title, lang = "en" } = Astro.props;
+const { 
+	title, 
+	description = "Keepfind ile yatırımlarınızı, hisse senetlerinizi ve kripto varlıklarınızı tek bir yerden profesyonelce yönetin. Finansal özgürlüğünüz için en iyi portföy takip aracı.", 
+	lang = "tr" 
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -17,7 +24,25 @@ const { title, lang = "en" } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
+		
+		<!-- SEO -->
 		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={Astro.url} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content="/og-image.png" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={Astro.url} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content="/og-image.png" />
 	</head>
 	<body class="antialiased">
 		<slot />
