@@ -1,0 +1,18 @@
+/*
+  Keepfin's palette for the taste-skill kit, as `start.mjs brand` printed it (the client's own colours),
+  and the type: Chivo and Chivo Mono, self-hosted by the Astro Fonts API (astro.config.mjs `fonts`).
+  Imported after the kit's stylesheets: layout.css resets --ly-scale, so this block must come later.
+*/
+:root {
+  --p-bg: #10171d; --p-surface: #172128; --p-ink: #e0eaed; --p-muted: #9aabb2;
+  --p-accent: #279fa3; --p-accent-ink: #10171d; --p-action: #279fa3; --p-action-ink: #10171d;
+  --p-inv-bg: #e0eaed; --p-inv-surface: #cfd9dd; --p-inv-ink: #10171d; --p-inv-muted: #50585e;
+  --p-inv-accent: #10171d; --p-inv-accent-ink: #e0eaed; --p-inv-action: #10171d; --p-inv-action-ink: #e0eaed;
+  --font-display: var(--font-chivo);
+  --font-text: var(--font-chivo);
+  --font-mono: var(--font-chivo-mono);
+  --display-weight: 400;
+  --display-tracking: -0.03em;
+  --display-tracking-xl: -0.04em;
+  --ly-scale: 0.96;
+}

@@ -1,0 +1,144 @@
+{
+ "url": "http://127.0.0.1:5300/index.html",
+ "views": {
+  "mobile": {
+   "width": 390,
+   "height": 844,
+   "navH": 56,
+   "scrollHeight": 7235,
+   "screens": 8.57,
+   "sections": [
+    {
+     "n": 1,
+     "tag": "section",
+     "id": "",
+     "cls": "hero hero--collage is-still is-entered",
+     "top": 0,
+     "h": 844,
+     "hScreens": 1,
+     "offGrid": 0,
+     "tiles": [
+      {
+       "file": "mobile-sec-01-a.jpg",
+       "scrollY": 0
+      }
+     ]
+    },
+    {
+     "n": 2,
+     "tag": "section",
+     "id": "app",
+     "cls": "section",
+     "top": 844,
+     "h": 844,
+     "hScreens": 1,
+     "offGrid": 0,
+     "tiles": [
+      {
+       "file": "mobile-sec-02-a.jpg",
+       "scrollY": 844
+      }
+     ]
+    },
+    {
+     "n": 3,
+     "tag": "section",
+     "id": "ledger-note",
+     "cls": "section",
+     "top": 1688,
+     "h": 868,
+     "hScreens": 1.03,
+     "offGrid": 24,
+     "tiles": [
+      {
+       "file": "mobile-sec-03-a.jpg",
+       "scrollY": 1688
+      },
+      {
+       "file": "mobile-sec-03-b.jpg",
+       "scrollY": 1712
+      }
+     ]
+    },
+    {
+     "n": 4,
+     "tag": "section",
+     "id": "features",
+     "cls": "section g2",
+     "top": 2556,
+     "h": 1688,
+     "hScreens": 2,
+     "offGrid": 0,
+     "tiles": [
+      {
+       "file": "mobile-sec-04-a.jpg",
+       "scrollY": 2556
+      },
+      {
+       "file": "mobile-sec-04-b.jpg",
+       "scrollY": 3400
+      }
+     ]
+    },
+    {
+     "n": 5,
+     "tag": "section",
+     "id": "roadmap",
+     "cls": "section ground-inverse",
+     "top": 4244,
+     "h": 844,
+     "hScreens": 1,
+     "offGrid": 0,
+     "tiles": [
+      {
+       "file": "mobile-sec-05-a.jpg",
+       "scrollY": 4244
+      }
+     ]
+    },
+    {
+     "n": 6,
+     "tag": "section",
+     "id": "faq",
+     "cls": "section",
+     "top": 5088,
+     "h": 1128,
+     "hScreens": 1.34,
+     "offGrid": 284,
+     "tiles": [
+      {
+       "file": "mobile-sec-06-a.jpg",
+       "scrollY": 5088
+      },
+      {
+       "file": "mobile-sec-06-b.jpg",
+       "scrollY": 5372
+      }
+     ]
+    },
+    {
+     "n": 7,
+     "tag": "footer",
+     "id": "contact",
+     "cls": "footer closing",
+     "top": 6215,
+     "h": 1020,
+     "hScreens": 1.21,
+     "offGrid": 176,
+     "tiles": [
+      {
+       "file": "mobile-sec-07-a.jpg",
+       "scrollY": 6215
+      },
+      {
+       "file": "mobile-sec-07-b.jpg",
+       "scrollY": 6391
+      }
+     ]
+    }
+   ],
+   "consoleErrors": []
+  }
+ },
+ "at": "2026-11-20T07:15:51.387Z"
+}

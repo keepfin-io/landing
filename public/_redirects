@@ -1,0 +1,4 @@
+# Cloudflare Pages redirects (https://developers.cloudflare.com/pages/configuration/redirects/)
+# Every page URL ends in a slash (astro.config.mjs trailingSlash: 'always').
+/tr  /tr/  301
+/en  /en/  301

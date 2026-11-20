@@ -1,0 +1,571 @@
+---
+/*
+  Keepfin landing page, built with the taste-skill kit (~/.agents/skills/design-taste-frontend/assets): its
+  stylesheets in src/styles/kit, its scripts in public/assets. The kit's markup and classes are used as-is;
+  src/styles/keepfin.css holds only the page CSS the recipes allow and the language menu.
+*/
+import { Image, Font } from 'astro:assets';
+import SEO from './SEO.astro';
+import { getDictionary, langPath, langUrl, languages, links, type Lang } from '../i18n/ui';
+import wordmark from '../assets/brand/keepfin-wordmark.png';
+import mark from '../assets/brand/keepfin-mark.png';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+// Interface glyphs (Lucide, fetched by the kit's icons.mjs into src/assets/icons), inlined so they take the
+// text colour; decorative beside their words, so hidden from screen readers.
+const rawGlyphs = import.meta.glob('../assets/icons/ui-*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const glyph = (name: string) =>
+  (rawGlyphs[`../assets/icons/ui-${name}.svg`] ?? '')
+    .replace(/\s(role|aria-label|class)="[^"]*"/g, '')
+    .replace('<svg', '<svg aria-hidden="true" focusable="false"');
+const statementGlyphs = ['receipt-text', 'file-spreadsheet', 'chart-line'];
+const cardGlyph = { income: 'coins', accounts: 'wallet', search: 'search', rates: 'arrow-right-left' } as const;
+
+// The kit's grounds script must run before the first paint: inlined, so it costs no request.
+const backgroundsJs = readFileSync(join(process.cwd(), 'public/assets/backgrounds/backgrounds.js'), 'utf8');
+
+// The taste-skill kit's stylesheets in its order, then Keepfin's palette and page CSS: Vite bundles and
+// minifies them into one hashed file. The kit's scripts stay in public/assets (they load parts at runtime).
+import '../styles/kit/system.css';
+import '../styles/kit/cards.css';
+import '../styles/kit/motion.css';
+import '../styles/kit/backgrounds.css';
+import '../styles/kit/layout.css';
+import '../styles/kit/icon.css';
+import '../styles/palette.css';
+import '../styles/kit/ui/base.css';
+import '../styles/kit/ui/window.css';
+import '../styles/kit/ui/stat.css';
+import '../styles/kit/ui/notify.css';
+import '../styles/kit/ui/toggles.css';
+import '../styles/kit/ui/search.css';
+import '../styles/kit/ui/checklist.css';
+import '../styles/keepfin.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getDictionary(lang);
+const site = Astro.site!;
+const pageUrl = langUrl(lang);
+const ogImage = { path: `/og/${lang}.png`, alt: t.meta.ogAlt, width: 1200, height: 630 };
+const ogImageUrl = new URL(ogImage.path, site).href;
+const year = new Date().getFullYear();
+const langs = Object.keys(languages) as Lang[];
+const roadmapDone = t.roadmap.availableItems.length;
+const roadmapTotal = roadmapDone + t.roadmap.inProgressItems.length;
+
+// ui.js links each fragment's stylesheet unless one with the same address is already on the page. They are in
+// the bundle above, so these addresses are listed with media="not all": never applied, never render-blocking.
+const kitUiStyles = ['base', 'window/fragment', 'stat/fragment', 'notify/fragment', 'toggles/fragment', 'search/fragment', 'checklist/fragment'];
+
+// Structured data (schema.org): who makes it, the site, this page, the app, its source code and the FAQ.
+const ids = {
+  org: `${site.href}#organization`,
+  website: `${site.href}#website`,
+  app: `${site.href}#app`,
+  page: `${pageUrl}#webpage`,
+};
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': ids.org,
+      name: 'Keepfin',
+      url: site.href,
+      logo: { '@type': 'ImageObject', url: new URL('/icons/icon-512.png', site).href, width: 512, height: 512 },
+      sameAs: [links.github],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': ids.website,
+      name: 'Keepfin',
+      url: site.href,
+      inLanguage: langs.map((code) => languages[code].locale),
+      publisher: { '@id': ids.org },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': ids.page,
+      url: pageUrl,
+      name: t.meta.title,
+      description: t.meta.description,
+      inLanguage: languages[lang].locale,
+      isPartOf: { '@id': ids.website },
+      about: { '@id': ids.app },
+      primaryImageOfPage: { '@type': 'ImageObject', url: ogImageUrl, width: ogImage.width, height: ogImage.height },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': ids.app,
+      name: 'Keepfin',
+      description: t.meta.appDescription,
+      applicationCategory: 'FinanceApplication',
+      applicationSubCategory: 'Portfolio tracker',
+      operatingSystem: 'Linux, macOS, Windows (Docker)',
+      inLanguage: langs.map((code) => languages[code].locale),
+      url: pageUrl,
+      image: ogImageUrl,
+      screenshot: ogImageUrl,
+      featureList: t.roadmap.availableItems.map(([name]) => name),
+      license: links.license,
+      isAccessibleForFree: true,
+      downloadUrl: links.github,
+      softwareHelp: { '@type': 'CreativeWork', url: links.quickStart },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      author: { '@id': ids.org },
+      publisher: { '@id': ids.org },
+      sameAs: [links.github],
+    },
+    {
+      '@type': 'SoftwareSourceCode',
+      name: 'keepfin.io',
+      codeRepository: links.github,
+      programmingLanguage: ['Go', 'Vue', 'TypeScript'],
+      license: links.license,
+      author: { '@id': ids.org },
+      targetProduct: { '@id': ids.app },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${pageUrl}#faq`,
+      inLanguage: languages[lang].locale,
+      isPartOf: { '@id': ids.page },
+      mainEntity: t.faq.items.map(([q, a]) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    },
+  ],
+};
+
+const arrow = `<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg>`;
+const tick = `<svg viewBox="0 0 16 16"><path d="m4.5 8.2 2.3 2.3 4.7-5"/></svg>`;
+const fileIcon = `<svg class="ui-icon" viewBox="0 0 16 16"><path d="M4 2.5h5l3 3v8H4z"/><path d="M9 2.5v3h3"/></svg>`;
+const thumbTone = { up: '#1d4b4d', down: '#4a2f2c', flat: '#2a3640' } as const;
+const chipClass = { up: 'd-chip', down: 'd-chip d-chip--out', flat: 'd-chip d-chip--flat' } as const;
+const iconClass: Record<string, string> = { go: 'ic ic-wide', docker: 'ic ic-land' };
+---
+
+<!doctype html>
+<!-- kind: software (an open-source portfolio tracker written in Go) -->
+<html lang={lang} data-type="software" data-radius="soft" data-ground="sage" data-buttons="pill" data-motion>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<SEO title={t.meta.title} description={t.meta.description} lang={lang} image={ogImage} jsonLd={jsonLd} />
+<meta name="site-kind" content="software" />
+<meta name="page-type" content="software" />
+<Font cssVariable="--font-chivo" preload={[{ subset: 'latin', weight: '400' }]} />
+<Font cssVariable="--font-chivo-mono" />
+{kitUiStyles.map((path) => <link rel="stylesheet" href={`/assets/ui/${path}.css`} media="not all" />)}
+<script is:inline>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script is:inline set:html={backgroundsJs}></script>
+<script is:inline>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="/assets/moments/moments.js" />
+<link rel="modulepreload" href="/assets/moments/lib.js" />
+<link rel="modulepreload" href="/assets/moments/liquid-type/moment.js" />
+</head>
+<body>
+<!-- deal: hero collage, nav nav-centre (nav-cards dealt; no photographs, so dealt again per sections.md 2),
+     close close-word, footer footer-columns, rhythm dark-band (the roadmap), buttons pill, mark: the client's logo,
+     palette: Keepfin brand (the dealt blue-black-cornflower clashed with the teal logo), type chivo,
+     ground sage, effect grain-gradient in the hero frame.
+     moments: liquid-type in #ledger-note (its own one-screen statement section). -->
+
+<header class="nav nav--centre">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">{t.skip}</a>
+    <a class="nav__logo" href="#top" aria-label="Keepfin">
+      <Image class="nav__brand" src={wordmark} alt="Keepfin" height={32} densities={[1, 2]} format="webp" loading="eager" fetchpriority="high" />
+      <Image class="nav__brand nav__brand--mark" src={mark} alt="" height={32} densities={[1, 2]} format="webp" loading="eager" />
+    </a>
+    <nav class="nav__links" aria-label={t.nav.label}>
+      <div class="nav__item"><a class="nav__link" href="#app">{t.nav.app}</a></div>
+      <div class="nav__item"><a class="nav__link" href="#features">{t.nav.features}</a></div>
+      <div class="nav__item"><a class="nav__link" href="#roadmap">{t.nav.roadmap}</a></div>
+      <div class="nav__item"><a class="nav__link" href="#faq">{t.nav.faq}</a></div>
+    </nav>
+    <div class="nav__actions">
+      <details class="lang-menu">
+        <summary class="lang-menu__current" aria-label={`${t.nav.langLabel}: ${languages[lang].name}`}>
+          <img src={languages[lang].flag} alt="" width="20" height="14" />
+          <span>{languages[lang].short}</span>
+          <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
+        <ul class="lang-menu__list">
+          {langs.map((code) => (
+            <li>
+              <a class="lang-menu__item" href={langPath(code)} hreflang={code} lang={code} data-lang={code} data-astro-prefetch aria-current={code === lang ? 'true' : undefined}>
+                <img src={languages[code].flag} alt="" width="20" height="14" />
+                <span>{languages[code].name}</span>
+                {code === lang && <svg class="lang-menu__tick" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 8.4 2.8 2.8 6.2-6.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
+      <a class="btn btn--primary" href={links.github}>{t.cta}</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label={t.nav.menuToggle}>
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--collage" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="hero__text span-5">
+        <h1 id="hero-h">{t.hero.h1}</h1>
+        <p class="hero__lead">{t.hero.lead}</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href={links.github}>{t.cta}<Fragment set:html={arrow} /></a>
+          <a class="btn btn--secondary" href="#roadmap">{t.hero.secondary}</a>
+        </div>
+      </div>
+      <div class="hero__art span-6 start-7" data-fx="grain-gradient" data-fx-seed="41" role="img" aria-label={t.hero.artLabel}>
+        <div class="ly-piece ly-piece--main d-win d-win--dark" aria-hidden="true">
+          <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span>{t.hero.win.crumb}</span></div>
+          <div class="d-win__body">
+            <div class="d-side">
+              {t.hero.win.side.map((s, i) => <span class={i === 1 ? 'is-on' : undefined}><i></i>{s}</span>)}
+              <span class="d-side__label">{t.hero.win.sideLabel}</span>
+              {t.hero.win.accounts.map((a) => <span><i></i>{a}</span>)}
+            </div>
+            <div class="d-main">
+              <div class="d-main__head"><strong class="d-main__title">{t.hero.win.title}</strong><span class="d-btn">{t.hero.win.button}</span></div>
+              <div class="d-tabs">{t.hero.win.tabs.map((tab, i) => <span class={i === 0 ? 'is-on' : undefined}>{tab}</span>)}</div>
+              <div class="d-rows">
+                {t.hero.win.rows.map((r) => (
+                  <div class="d-row">
+                    <span class="d-thumb" style={`background:${thumbTone[r.tone]}`}></span>
+                    <div><b>{r.name}</b><small>{r.detail}</small></div>
+                    <span class="num">{r.qty}</span>
+                    <span class={chipClass[r.tone]}>{r.change}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ly-piece ly-piece--note d-card d-card--dark" aria-hidden="true" data-ly-steps="700">
+          <div class="d-card__row"><strong class="d-card__title">{t.hero.note.file}</strong><span class="d-chip" data-step data-step-at="4">{t.hero.note.done}</span></div>
+          {t.hero.note.lines.map(([mark, text]) => (
+            <div class="d-note__line" data-step><i class={mark === '!' ? 'warn' : undefined}>{mark}</i><span set:html={text} /></div>
+          ))}
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="app" aria-labelledby="app-h">
+    <div class="wrap">
+      <div class="grid grid--top">
+        <h2 id="app-h" class="span-5">{t.app.h2}</h2>
+        <div class="span-6 start-7 stack-4">
+          <p class="muted">{t.app.p}</p>
+          <a class="link" href="#features">{t.app.link}</a>
+        </div>
+      </div>
+      <div class="ui app fill" role="img" aria-label={t.app.label} data-ui-pause-host>
+        <div class="app__pane app__pane--list">
+          <div class="ui ui-panel ui-win" data-ui="window" data-open={t.app.win.open} data-work={t.app.win.work} data-done={t.app.win.done}>
+            <div class="ui-win__bar">
+              <span class="ui-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="ui-win__crumb">Keepfin <i>/</i> <b>{t.app.win.crumb}</b></span>
+              <span class="ui-spacer"></span>
+              <span class="ui-win__search" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg><span class="ui-win__ph">{t.app.win.search}</span><span class="ui-kbd">/</span></span>
+            </div>
+            <div class="ui-win__body">
+              <nav class="ui-win__side" aria-hidden="true">
+                {t.app.win.side.map(([label, n], i) => (
+                  <span class={i === 0 ? 'ui-win__nav is-on' : 'ui-win__nav'}><svg class="ui-icon" viewBox="0 0 16 16"><path d="M2.5 9h3l1 1.5h3l1-1.5h3"/><path d="M2.5 9 4 3.5h8L13.5 9v3.5h-11z"/></svg>{label}<em>{n}</em></span>
+                ))}
+                <span class="ui-win__label">{t.app.win.sideLabel}</span>
+                {t.app.win.accounts.map((a) => <span class="ui-win__nav"><span class="ui-win__hash">#</span>{a}</span>)}
+              </nav>
+              <div class="ui-win__main">
+                <div class="ui-win__cols" aria-hidden="true">{t.app.win.cols.map((c) => <span>{c}</span>)}</div>
+                <ul class="ui-win__rows">
+                  {t.app.win.rows.map((r) => (
+                    <li class="ui-win__row" data-row>
+                      <span class="ui-avatar" data-tone={r.tone}>{r.initials}</span>
+                      <span class="ui-win__who">{r.asset}</span>
+                      <span class="ui-win__sub">{r.entry}</span>
+                      <span class={r.st === 'done' ? 'ui-win__st is-done' : 'ui-win__st'} data-st>{r.st === 'done' ? t.app.win.done : t.app.win.open}</span>
+                      <span class="ui-win__age">{r.date}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app__pane app__pane--open" data-ui-loop>
+          <div class="ui ui-panel ui-stat" data-ui="stat" data-ui-opts='{"fill":true}'>
+            <div class="ui-stat__head">
+              <div class="ui-stat__top">
+                <span class="ui-stat__label">{t.app.stat.label}</span>
+                <span class="ui-stat__range">{t.app.stat.range}<svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 6.5 3.5 3.5 3.5-3.5"/></svg></span>
+              </div>
+              <div class="ui-stat__line">
+                <span class="ui-stat__num" data-stat-num>{t.app.stat.num}</span>
+                <span class="ui-chip ui-chip--plain ui-stat__delta"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 9.5v-7M3 5.5l3-3 3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{t.app.stat.delta}</span>
+                <span class="ui-stat__sub">{t.app.stat.sub}</span>
+              </div>
+            </div>
+            <div class="ui-stat__chart">
+              <svg class="ui-stat__svg" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+                <path class="ui-stat__grid" d="M0 30.5H400M0 60.5H400M0 90.5H400"/>
+                <path class="ui-stat__cover" fill-rule="evenodd" d=""/>
+                <g class="ui-stat__bars"><rect rx="3" x="0.00" y="49.04" width="21.14" height="70.96"/><rect rx="3" x="29.14" y="40.86" width="21.14" height="79.14"/><rect rx="3" x="58.29" y="44.95" width="21.14" height="75.05"/><rect rx="3" x="87.43" y="36.76" width="21.14" height="83.24"/><rect rx="3" x="116.57" y="42.22" width="21.14" height="77.78"/><rect rx="3" x="145.71" y="34.04" width="21.14" height="85.96"/><rect rx="3" x="174.86" y="38.13" width="21.14" height="81.87"/><rect rx="3" x="204.00" y="29.94" width="21.14" height="90.06"/><rect rx="3" x="233.14" y="35.40" width="21.14" height="84.60"/><rect rx="3" x="262.29" y="25.85" width="21.14" height="94.15"/><rect rx="3" x="291.43" y="31.31" width="21.14" height="88.69"/><rect rx="3" x="320.57" y="23.12" width="21.14" height="96.88"/><rect rx="3" x="349.71" y="27.21" width="21.14" height="92.79"/><rect rx="3" x="378.86" y="16.30" width="21.14" height="103.70"/></g>
+              </svg>
+              <div class="ui-stat__axis" aria-hidden="true">{t.app.stat.axis.map((a) => <span>{a}</span>)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ledger-note" aria-labelledby="ledger-note-h">
+    <div class="wrap">
+      <div data-moment="liquid-type" class="section-head">
+        <p class="t-label muted">{t.statement.label}</p>
+        <h2 id="ledger-note-h" class="mo-lt__type">{t.statement.h2}</h2>
+        <p class="t-lead measure">{t.statement.p}</p>
+      </div>
+      <div class="grid data-parts">
+        {t.statement.items.map(([name, text], i) => (
+          <div class="span-4 stack-4">
+            <span class="ic-tile ic-tile--accent ic-tile--48 glyph-tile" set:html={glyph(statementGlyphs[i])} />
+            <div class="stack-2">
+              <p class="t-card">{name}</p>
+              <p>{text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section g2" id="features" aria-labelledby="features-h">
+    <div class="wrap">
+      <div class="group">
+        <div class="section-head">
+          <h2 id="features-h">{t.features.h2} <span class="muted">{t.features.h2Muted}</span></h2>
+        </div>
+        <div class="grid">
+          <article class="card card--row card--open span-6" id="income">
+            <h3 class="card-title"><span class="card-title__icon" set:html={glyph(cardGlyph.income)} />{t.features.cards.income.title}</h3>
+            <p>{t.features.cards.income.body}</p>
+            <div class="panel" data-ui-pause-host>
+              <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:380px;--ax:32px;--ay:calc(100% - 180px);--ay-sm:calc(100% - 180px)" data-ui-loop>
+                <div class="ui ui-notify" data-ui="notify">
+                  <ul class="ui-notify__list" data-notify-list>
+                    {t.features.cards.income.notes.map(([title, time, body]) => (
+                      <li class="ui-note"><span class="ui-note__ico"><svg class="ui-icon" viewBox="0 0 16 16"><path d="m3.5 8.4 2.8 2.8 6.2-6.4"/></svg></span><span class="ui-note__text"><span class="ui-note__title">{title}<time>{time}</time></span><span class="ui-note__body">{body}</span></span></li>
+                    ))}
+                  </ul>
+                </div>
+              </div></div>
+            </div>
+          </article>
+          <article class="card card--row card--open span-6" id="accounts">
+            <h3 class="card-title"><span class="card-title__icon" set:html={glyph(cardGlyph.accounts)} />{t.features.cards.accounts.title}</h3>
+            <p>{t.features.cards.accounts.body}</p>
+            <div class="panel">
+              <div class="stage stage--fade-b"><div class="at-right to-edge" style="--ax:32px;--ay:56px">
+                <div class="ui ui-panel ui-toggles" data-ui="toggles">
+                  <div class="ui-head">
+                    <svg class="ui-icon ui-toggles__ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4.5h11v8h-11z"/><path d="M2.5 7h11"/></svg>
+                    <div class="ui-title">{t.features.cards.accounts.head}</div>
+                    <span class="ui-spacer"></span>
+                    <div class="ui-meta" data-tg-count>{t.features.cards.accounts.count}</div>
+                  </div>
+                  <ul class="ui-toggles__list">
+                    {t.features.cards.accounts.rows.map(([label, sub, on]) => (
+                      <li class="ui-tg">
+                        <span class="ui-tg__text"><span class="ui-tg__label">{label}</span><span class="ui-tg__sub">{sub}</span></span>
+                        <button class={on ? 'ui-switch is-on' : 'ui-switch'} type="button" role="switch" aria-checked={on ? 'true' : 'false'} aria-label={label} tabindex="-1"><i></i></button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div></div>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card card--row card--open span-6" id="search">
+          <h3 class="card-title"><span class="card-title__icon" set:html={glyph(cardGlyph.search)} />{t.features.cards.search.title}</h3>
+          <p>{t.features.cards.search.body}</p>
+          <div class="panel">
+            <div class="stage stage--fade-b"><div class="at-rise fit to-edge" style="--fit-max:400px;--ax:max(24px, 50% - 200px);--ay:56px;--ay-sm:56px">
+              <div class="ui ui-panel ui-search" data-ui="search">
+                <div class="ui-search__field">
+                  <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+                  <span class="ui-search__q"><span data-search-q>{t.features.cards.search.q}</span><i class="ui-search__caret"></i></span>
+                  <kbd class="ui-search__kbd">/</kbd>
+                </div>
+                <div class="ui-search__group">{t.features.cards.search.group}</div>
+                <ul class="ui-search__list" data-search-list>
+                  {t.features.cards.search.rows.map(([title, meta], i) => (
+                    <li class={i === 0 ? 'ui-search__row is-sel' : 'ui-search__row'}><span class="ui-search__ico" set:html={fileIcon} /><span class="ui-search__t" set:html={title} /><span class="ui-search__m">{meta}</span></li>
+                  ))}
+                </ul>
+                <div class="ui-search__foot"><span><kbd>&uarr;</kbd><kbd>&darr;</kbd> {t.features.cards.search.foot[0]}</span><span><kbd>Enter</kbd> {t.features.cards.search.foot[1]}</span></div>
+              </div>
+            </div></div>
+          </div>
+        </article>
+        <article class="card card--row card--open span-6" id="rates">
+          <h3 class="card-title"><span class="card-title__icon" set:html={glyph(cardGlyph.rates)} />{t.features.cards.currency.title}</h3>
+          <p>{t.features.cards.currency.body}</p>
+          <div class="panel">
+            <div class="stage stage--fade-b"><div class="at-rise fit" style="--fit-max:340px;--ax:max(24px, 50% - 170px);--ay:40px;--ay-sm:24px">
+              <div class="ui ui-panel ui-checks" data-ui="checklist">
+                <div class="ui-checks__head">
+                  <div class="ui-title">{t.features.cards.currency.head}</div>
+                  <span class="ui-spacer"></span>
+                  <div class="ui-meta" data-checks-count>{t.features.cards.currency.count}</div>
+                </div>
+                <div class="ui-checks__bar"><i data-checks-bar style="--k:0.67"></i></div>
+                <ul class="ui-checks__list">
+                  {t.features.cards.currency.rows.map(([label, done]) => (
+                    <li class={done ? 'ui-check is-done' : 'ui-check'}><span class="ui-check__box" set:html={tick} /><span class="ui-check__label">{label}</span></li>
+                  ))}
+                </ul>
+              </div>
+            </div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section ground-inverse" id="roadmap" aria-labelledby="roadmap-h">
+    <div class="wrap">
+      <div class="grid grid--top fill">
+        <div class="span-5 stack-6">
+          <h2 id="roadmap-h">{t.roadmap.h2}</h2>
+          <p class="t-lead">{t.roadmap.p}</p>
+          <a class="link" href={links.roadmap}>{t.roadmap.link}</a>
+        </div>
+        <div class="frame frame--split frame--fill span-6 start-7" role="img" aria-label={`${t.roadmap.h2}: ${t.roadmap.available} ${roadmapDone}, ${t.roadmap.inProgress} ${t.roadmap.inProgressItems.length}`}>
+          <div class="stage"><div class="at-rise fit" style="--fit-max:440px;--ax:max(32px, 50% - 220px);--ay:40px;--ay-sm:24px">
+            <div class="ui ui-panel ui-checks" data-ui="checklist" aria-hidden="true">
+              <div class="ui-checks__head">
+                <div class="ui-title">{t.roadmap.h2}</div>
+                <span class="ui-spacer"></span>
+                <div class="ui-meta" data-checks-count>{roadmapDone} / {roadmapTotal}</div>
+              </div>
+              <div class="ui-checks__bar"><i data-checks-bar style={`--k:${(roadmapDone / roadmapTotal).toFixed(2)}`}></i></div>
+              <ul class="ui-checks__list">
+                {t.roadmap.availableItems.map(([name]) => (
+                  <li class="ui-check is-done"><span class="ui-check__box" set:html={tick} /><span class="ui-check__label">{name}</span><span class="ui-meta">{t.roadmap.available}</span></li>
+                ))}
+                {t.roadmap.inProgressItems.map((name) => (
+                  <li class="ui-check"><span class="ui-check__box" set:html={tick} /><span class="ui-check__label">{name}</span><span class="ui-meta">{t.roadmap.inProgress}</span></li>
+                ))}
+              </ul>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faq-h">
+    <div class="wrap">
+      <div class="grid grid--top">
+        <div class="span-5 stack-6">
+          <div class="stack-4">
+            <h2 id="faq-h">{t.faq.h2}</h2>
+            <p class="muted">{t.faq.p}</p>
+            <a class="link" href={links.issues}>{t.faq.link}</a>
+          </div>
+          <div class="stack-4">
+            <p class="t-label muted">{t.faq.stack}</p>
+            <ul class="stack-list">
+              {t.faq.stackItems.map(([icon, name, role]) => (
+                <li>
+                  <span class="ic-tile ic-tile--56"><img class={iconClass[icon] ?? 'ic'} src={`/assets/icons/${icon}.svg`} alt="" width="56" height="56" /></span>
+                  <span class="stack-list__text"><span class="stack-list__name">{name}</span><span class="stack-list__role">{role}</span></span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div class="faq span-6 start-7">
+          {t.faq.items.map(([q, a]) => (
+            <div class="faq__item"><h3>{q}</h3><p>{a}</p></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--word">
+      <div class="section-head--split">
+        <div><h2 id="close-h">{t.close.h2}</h2><p class="t-lead">{t.close.p}</p></div>
+        <a class="btn btn--primary" href={links.github}>{t.cta}<Fragment set:html={arrow} /></a>
+      </div>
+      <p class="close__word" aria-hidden="true">Keepfin</p>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top" aria-label="Keepfin"><Image class="nav__mark" src={mark} alt="Keepfin" height={32} densities={[1, 2]} format="webp" /></a>
+          <p class="footer__lede">{t.footer.lede}</p>
+        </div>
+        {t.footer.cols.map(([head, items]) => (
+          <div class="span-2 footer__col"><h3>{head}</h3><ul>{items.map(([label, href]) => <li><a href={href}>{label}</a></li>)}</ul></div>
+        ))}
+      </div>
+      <div class="footer__legal">
+        <span>&copy; {year} Keepfin</span>
+        <span class="footer__notice">{t.footer.notice} {t.footer.trademarks}</span>
+        <div class="socials"></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script is:inline>
+  // phones draw the hero's ground in CSS (keepfin.css) instead of the WebGL effect: the shader is the page's
+  // heaviest task on a slow phone, and the kit shows phones a still ground anyway
+  if (matchMedia('(max-width: 639px)').matches) document.querySelectorAll('.hero__art[data-fx]').forEach((el) => el.removeAttribute('data-fx'));
+</script>
+<script is:inline type="module" src="/assets/system.js"></script>
+<script is:inline type="module" src="/assets/motion/motion.js"></script>
+<script is:inline type="module" src="/assets/layout/layout.js"></script>
+<script is:inline>
+  // the language menu closes on Escape and on a click outside it (a <details>, so it works without script too);
+  // a language picked there is remembered (a cookie the Cloudflare function at `/` reads, and localStorage for the
+  // static fallback), so `/` opens it next time instead of the browser's language
+  (() => {
+    const menu = document.querySelector('.lang-menu');
+    if (!menu) return;
+    menu.addEventListener('click', (e) => {
+      const item = e.target.closest('[data-lang]');
+      if (!item) return;
+      try { localStorage.setItem('lang', item.dataset.lang); } catch (_) {}
+      document.cookie = `lang=${item.dataset.lang}; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
+    });
+    document.addEventListener('click', (e) => { if (menu.open && !menu.contains(e.target)) menu.open = false; });
+    menu.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.open) { menu.open = false; menu.querySelector('summary').focus(); } });
+  })();
+</script>
+</body>
+</html>

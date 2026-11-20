@@ -1,0 +1,43 @@
+---
+/* Cloudflare Pages serves dist/404.html for any path the site does not have. Both languages, not indexed. */
+import SEO from '../components/SEO.astro';
+import { langPath, languages, type Lang } from '../i18n/ui';
+
+const langs = Object.keys(languages) as Lang[];
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<SEO
+  title="Page not found · Sayfa bulunamadı | Keepfin"
+  description="This page does not exist. Bu sayfa yok."
+  alternates={false}
+  noindex
+/>
+<style>
+  html { background: #10171d; color: #e0eaed; font: 16px/1.6 system-ui, sans-serif; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; box-sizing: border-box; }
+  main { max-width: 520px; }
+  .code { color: #4bb7bb; font: 500 14px/1 ui-monospace, monospace; letter-spacing: .08em; }
+  h1 { margin: 12px 0 8px; font-size: 32px; font-weight: 500; letter-spacing: -0.02em; }
+  p { margin: 0 0 4px; color: #9aabb2; }
+  nav { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+  a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 999px; background: #279fa3; color: #052326; text-decoration: none; font-weight: 500; }
+  a + a { background: #1d2a31; color: #e0eaed; }
+</style>
+</head>
+<body>
+  <main>
+    <p class="code">404</p>
+    <h1>Page not found · Sayfa bulunamadı</h1>
+    <p lang="en">The page you are looking for does not exist or has moved.</p>
+    <p lang="tr">Aradığın sayfa yok ya da taşındı.</p>
+    <nav aria-label="Keepfin">
+      {langs.map((code) => <a href={langPath(code)} hreflang={code} lang={code}>Keepfin · {languages[code].name}</a>)}
+    </nav>
+  </main>
+</body>
+</html>

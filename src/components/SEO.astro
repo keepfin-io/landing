@@ -1,0 +1,71 @@
+---
+/*
+  The page head's search and sharing tags, in one place (Astro's BaseHead pattern): title, description,
+  canonical, hreflang alternates, robots, Open Graph, Twitter, icons, the web manifest, search console
+  ownership tags and JSON-LD. Every page renders it inside <head>.
+*/
+import { PUBLIC_BING_SITE_VERIFICATION, PUBLIC_GOOGLE_SITE_VERIFICATION } from 'astro:env/client';
+import { languages, langUrl, type Lang } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  description: string;
+  /** The page's language; omit on pages that are not one language's (the `/` picker, the 404). */
+  lang?: Lang;
+  /** Social card: a path on the site and its alt text. */
+  image?: { path: string; alt: string; width: number; height: number };
+  /** Link the language versions (hreflang) and set a canonical URL. */
+  alternates?: boolean;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, lang, image, alternates = true, noindex = false, jsonLd } = Astro.props;
+const site = Astro.site!;
+const canonical = new URL(Astro.url.pathname, site).href;
+const langs = Object.keys(languages) as Lang[];
+const imageUrl = image ? new URL(image.path, site).href : undefined;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+{!noindex && <link rel="canonical" href={canonical} />}
+{alternates && langs.map((code) => <link rel="alternate" hreflang={code} href={langUrl(code)} />)}
+{alternates && <link rel="alternate" hreflang="x-default" href={site.href} />}
+
+<meta name="application-name" content="Keepfin" />
+<meta name="apple-mobile-web-app-title" content="Keepfin" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="theme-color" content="#10171d" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Keepfin" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{lang && <meta property="og:locale" content={languages[lang].og} />}
+{lang && langs.filter((code) => code !== lang).map((code) => <meta property="og:locale:alternate" content={languages[code].og} />)}
+{image && (
+  <>
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content={String(image.width)} />
+    <meta property="og:image:height" content={String(image.height)} />
+    <meta property="og:image:alt" content={image.alt} />
+  </>
+)}
+<meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{image && <meta name="twitter:image" content={imageUrl} />}
+{image && <meta name="twitter:image:alt" content={image.alt} />}
+
+{PUBLIC_GOOGLE_SITE_VERIFICATION && <meta name="google-site-verification" content={PUBLIC_GOOGLE_SITE_VERIFICATION} />}
+{PUBLIC_BING_SITE_VERIFICATION && <meta name="msvalidate.01" content={PUBLIC_BING_SITE_VERIFICATION} />}
+
+{jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
