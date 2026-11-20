@@ -1,0 +1,187 @@
+/*
+  Keepfin page CSS. Only what the taste-skill recipes allow outside the kit: the drawn window and note
+  inside the hero's visual (after layout/demo.css, in Keepfin's dark colours), the app-frame recipe,
+  one --p-h per card group, and the client's logo images in the nav and footer.
+*/
+
+/* the client's logo files */
+.nav__logo .nav__brand { height: 32px; width: auto; }
+.footer .nav__logo .nav__mark { height: 32px; width: auto; }
+
+/* ---------- hero visual: the Keepfin holdings window and the import note ---------- */
+.d-win { border-radius: 12px; overflow: hidden; font: 400 14px/1.4 var(--font-text); }
+.d-win--dark { background: #131c23; color: #e0eaed; box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 30px 70px -30px rgb(0 0 0 / .8); }
+.d-win__bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; border-bottom: 1px solid rgb(255 255 255 / .07); font-size: 13px; color: #9aabb2; }
+.d-win__dots { display: flex; gap: 6px; } .d-win__dots i { width: 10px; height: 10px; border-radius: 50%; background: #35454e; }
+.d-win__body { display: grid; grid-template-columns: 160px 1fr; min-height: 420px; }
+.d-side { padding: 14px 10px; border-right: 1px solid rgb(255 255 255 / .07); display: grid; align-content: start; gap: 2px; font-size: 13px; color: #9aabb2; }
+.d-side > span { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 8px; border-radius: 7px; }
+.d-side > span.is-on { background: rgb(75 183 187 / .14); color: #e0eaed; font-weight: 500; }
+.d-side > span i { width: 14px; height: 14px; border-radius: 4px; background: currentColor; opacity: .3; flex: none; }
+.d-side .d-side__label { font-size: 13px; color: #75878f; height: 26px; margin-top: 8px; }
+.d-main { padding: 16px 18px; display: grid; align-content: start; gap: 12px; min-width: 0; }
+.d-main__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.d-main__title { font: 500 16px/1.2 var(--font-text); letter-spacing: -0.01em; margin: 0; color: inherit; }
+.d-btn { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: 7px; background: #279fa3; color: #052326; font-size: 13px; font-weight: 500; }
+.d-tabs { display: flex; gap: 4px; font-size: 13px; } .d-tabs span { padding: 4px 10px; border-radius: 99px; color: #9aabb2; } .d-tabs span.is-on { background: rgb(255 255 255 / .07); color: #e0eaed; font-weight: 500; }
+.d-rows { display: grid; border-top: 1px solid rgb(255 255 255 / .07); }
+.d-row { display: grid; grid-template-columns: 36px minmax(0, 1fr) 56px 96px; align-items: center; gap: 12px; padding: 9px 2px; border-bottom: 1px solid rgb(255 255 255 / .07); font-size: 13px; }
+.d-row .d-thumb { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; font: 500 13px/1 var(--font-mono); color: #e0eaed; }
+.d-row b { display: block; font-weight: 500; color: #e0eaed; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.d-row small { color: #9aabb2; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.d-row .num { text-align: right; font-variant-numeric: tabular-nums; }
+.d-chip { justify-self: end; display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 8px; border-radius: 99px; font-size: 13px; font-weight: 500; background: rgb(75 183 187 / .16); color: #6fd0d3; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.d-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.d-chip--out { background: rgb(240 120 105 / .16); color: #f2a093; }
+.d-chip--flat { background: rgb(255 255 255 / .07); color: #9aabb2; }
+.ly-piece--main .d-main { padding-right: var(--ly-cut-room); }
+@media (max-width: 639px) {
+  .d-win__body { grid-template-columns: 1fr; } .d-side { display: none; }
+  .ly-piece--main .d-row { grid-template-columns: 36px minmax(0, 1fr) 96px; } .d-row .num { display: none; }
+}
+
+.d-card { border-radius: 12px; padding: 14px 16px; font: 400 14px/1.4 var(--font-text); text-align: left; }
+.d-card--dark { background: #172128; color: #e0eaed; box-shadow: 0 0 0 1px rgb(255 255 255 / .1), 0 18px 44px -20px rgb(0 0 0 / .7); }
+.d-card__title { display: block; margin: 0 0 4px; font: 500 14px/1.3 var(--font-mono); }
+.d-card__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.hero__art > .ly-piece--note { left: var(--s-6); bottom: var(--s-6); width: 300px; z-index: 2; }
+.d-note__line { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 13px; color: #c3d0d5; border-top: 1px solid rgb(255 255 255 / .07); }
+.d-note__line:first-of-type { border-top: 0; }
+.d-note__line i { width: 18px; height: 18px; border-radius: 50%; flex: none; display: grid; place-items: center; background: rgb(75 183 187 / .18); color: #6fd0d3; font-style: normal; font-size: 13px; font-weight: 500; }
+.d-note__line i.warn { background: rgb(240 190 90 / .18); color: #f0c46a; }
+.d-note__line b { font-weight: 500; color: #e0eaed; }
+@media (max-width: 1023px) { .hero__art > .ly-piece--note { left: var(--s-4); bottom: var(--s-4); width: 270px; } }
+
+/* ---------- app-frame (sections-library.md, the whole recipe) ---------- */
+.app.ui { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); }
+.app > .app__pane { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+.app > .app__pane + .app__pane { border-left: 1px solid var(--u-line); }
+.app > .app__pane > .ui-panel { width: 100%; border: 0; border-radius: 0; box-shadow: none; }
+.app > .app__pane::after { content: ""; position: absolute; inset: auto 0 0 0; height: 64px; background: linear-gradient(transparent, var(--u-bg)); pointer-events: none; }
+@media (min-width: 1024px) and (max-width: 1279px) { .app.ui { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); } }
+@media (max-width: 1023px) {
+  .app.ui { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .app > .app__pane--list { max-height: 252px; }
+  .app > .app__pane--list::after { display: none; }
+  .app .ui-win__side { display: none; }
+  .app .ui-win__body { grid-template-columns: minmax(0, 1fr); }
+  .app > .app__pane + .app__pane { border-left: 0; border-top: 1px solid var(--u-line); }
+}
+@media (max-width: 639px) {
+  .app.ui { grid-template-rows: minmax(0, 1fr); }
+  .app > .app__pane--list { display: none; }
+  .app > .app__pane + .app__pane { border-top: 0; }
+}
+
+/* ---------- one --p-h per card group ---------- */
+#features .panel { --p-h: 300px; }
+@media (max-width: 639px) { #features .panel { --p-h: 168px; } }
+
+/* the hero frame's pause button sits on the effect: its focus ring in ink so it reads at 3:1 there */
+.hero__art .ui-pause:focus-visible { outline-color: var(--p-bg); }
+
+/* the data statement: the three parts that hold the records, 48px under the words */
+.data-parts { margin-top: var(--s-8); }
+
+/* a phone shows the window's head and its first two holdings whole, inside the frame */
+@media (max-width: 639px) {
+  .ly-piece--main .d-tabs, .ly-piece--main .d-row:nth-child(n + 3) { display: none; }
+}
+
+/* the rates card: a found rate is a fact, not a finished task, so its row keeps its ink and is not struck through */
+#rates .ui-check.is-done .ui-check__label { color: var(--u-ink); }
+#rates .ui-check.is-done .ui-check__label::after { transform: scaleX(0); }
+
+/* ---------- language menu: the current language (flag, code) opens a small list of both ---------- */
+.lang-menu { position: relative; margin-right: var(--s-2); }
+.lang-menu__current { display: inline-flex; align-items: center; gap: var(--s-2); height: 44px; padding: 0 var(--s-3); border-radius: 999px; font: 500 14px/1 var(--font-text); color: var(--ink); cursor: pointer; list-style: none; transition: background-color 160ms ease; }
+.lang-menu__current::-webkit-details-marker { display: none; }
+.lang-menu__current:hover, .lang-menu[open] > .lang-menu__current { background: color-mix(in oklab, var(--ink) 10%, transparent); }
+.lang-menu__current .chev { width: 12px; height: 12px; transition: transform 160ms ease; }
+.lang-menu[open] > .lang-menu__current .chev { transform: rotate(180deg); }
+.lang-menu img { width: 20px; height: 14px; border-radius: 2px; box-shadow: 0 0 0 1px rgb(255 255 255 / .18); flex: none; }
+.lang-menu__list { position: absolute; top: calc(100% + var(--s-2)); right: 0; z-index: 20; min-width: 184px; margin: 0; padding: var(--s-1); list-style: none; background: var(--surface, #172128); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: 0 18px 44px -20px rgb(0 0 0 / .7); }
+.lang-menu__item { display: flex; align-items: center; gap: var(--s-3); height: 44px; padding: 0 var(--s-3); border-radius: var(--r-sm); font: 500 15px/1 var(--font-text); color: var(--muted); text-decoration: none; }
+.lang-menu__item:hover { background: color-mix(in oklab, var(--ink) 8%, transparent); color: var(--ink); }
+.lang-menu__item[aria-current="true"] { color: var(--ink); }
+.lang-menu__tick { width: 16px; height: 16px; margin-left: auto; color: var(--action); }
+@media (prefers-reduced-motion: reduce) { .lang-menu__current, .lang-menu__current .chev { transition: none; } }
+/* below 1024 the kit moves the menu into the open sheet's foot: there the list stands open, both languages named */
+@media (max-width: 1023px) {
+  .nav.is-open .lang-menu { margin: 0; }
+  .nav.is-open .lang-menu__current { display: none; }
+  .nav.is-open .lang-menu > .lang-menu__list { position: static; display: flex; justify-content: center; gap: var(--s-2); min-width: 0; padding: 0; background: none; border: 0; box-shadow: none; }
+  .nav.is-open .lang-menu:not([open]) > .lang-menu__list { display: flex; }
+}
+
+/* ---------- roadmap checklist: available rows keep their ink (done, not struck through), each row names its state ---------- */
+#roadmap .ui-check.is-done .ui-check__label, #rates .ui-check.is-done .ui-check__label { color: var(--u-ink); }
+#roadmap .ui-check.is-done .ui-check__label::after { transform: scaleX(0); }
+#roadmap .ui-check > .ui-meta { margin-left: auto; white-space: nowrap; }
+
+/* ---------- FAQ: the stack Keepfin is built with, real logos on light tiles with their job beside them ---------- */
+.stack-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5) var(--s-6); margin: 0; padding: 0; list-style: none; }
+.stack-list li { display: flex; align-items: center; gap: var(--s-4); min-width: 0; }
+.stack-list .ic-tile { --tile-bg: #eef4f5; border-radius: var(--r-md); box-shadow: 0 0 0 1px rgb(255 255 255 / .12), 0 14px 30px -18px rgb(0 0 0 / .8); }
+.stack-list__text { display: grid; gap: 2px; min-width: 0; }
+.stack-list__name { font: 500 var(--t-body)/1.3 var(--font-text); color: var(--ink); }
+.stack-list__role { font-size: var(--t-small); line-height: 1.4; color: var(--muted); }
+@media (max-width: 639px) { .stack-list { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); } }
+
+/* ---------- phones ---------- */
+/* the wordmark steps down to the K mark where the bar is too narrow for it, the button and the menu */
+.nav__brand--mark { display: none; }
+@media (max-width: 359px) {
+  .nav__logo .nav__brand:not(.nav__brand--mark) { display: none; }
+  .nav__logo .nav__brand--mark { display: block; }
+}
+/* the ledger statement wraps on two lines from 1280 */
+#ledger-note .mo-lt__type { max-width: 20ch; }
+
+/* ---------- Keepfin's own lit ground: the brand's teal instead of the kit's pale sage (3:1 lighter than the cards on it), so every frame and
+   panel that holds UI sits in the brand's colour under the grain (the client's colours, as the palette) ---------- */
+html[data-ground] {
+  --ground-bg: #2f7a7e; --ground-surface: #3f9094; --ground-ink: #052326; --ground-muted: #134347; --ground-accent: #7fd6d8;
+}
+.panel, .frame, .hero__art { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .06); }
+.ui.ui-panel, .ui.ui-notify .ui-note { box-shadow: 0 0 0 1px rgb(255 255 255 / .07), 0 24px 60px -28px rgb(0 0 0 / .8); }
+
+/* ---------- never overlap: from 1280 a section keeps its screens but grows with its content, as the kit
+   already does from 640 to 1279, so a short window or a long headline pushes the next section down ---------- */
+@media (min-width: 1280px) {
+  main > :is(section, .section):not(.hero, .section--hero), footer.closing {
+    height: auto; min-height: calc(var(--h, 1) * 100vh); min-height: calc(var(--h, 1) * 100svh);
+  }
+  :where(main > :is(section, .section):not(.hero, .section--hero), footer.closing) { display: flex; flex-direction: column; }
+  main > :is(section, .section):not(.hero, .section--hero) > :is(.wrap, .container), footer.closing > .wrap { flex: 1 0 auto; height: auto; min-height: 0; }
+}
+
+/* ---------- the ledger statement: two lines at most on a desktop ---------- */
+#ledger-note .mo-lt__type { font-size: clamp(48px, 6.2vw, 104px); max-width: 18ch; }
+
+/* ---------- tablets and phones: the roadmap list stands whole in its frame, which grows with it ---------- */
+@media (max-width: 1023px) {
+  #roadmap > .wrap > .grid.fill { flex: 0 0 auto; }
+  #roadmap .grid.fill > .frame--fill { flex: none; }
+  #roadmap .frame > .stage { position: relative; inset: auto; width: 100%; }
+  #roadmap .frame > .stage > .at-rise { position: relative; left: auto; right: auto; top: auto; }
+}
+@media (max-width: 639px) {
+  #roadmap > .wrap, #roadmap .grid.fill { height: auto; }
+  #roadmap .frame { padding: var(--s-3); }
+  #roadmap .ui-check > .ui-meta { display: none; }
+}
+
+/* ---------- small glyphs beside words: a tinted tile over the ledger facts, an inline mark before card titles ---------- */
+.glyph-tile svg { width: 22px; height: 22px; }
+.card-title { display: flex; align-items: center; gap: var(--s-2); }
+.card-title__icon { display: inline-flex; flex: none; color: var(--accent); }
+.card-title__icon svg { width: 18px; height: 18px; }
+
+/* ---------- phones: the hero frame's ground in CSS (the WebGL effect is not started there) ---------- */
+.hero__art:not([data-fx]) {
+  background:
+    radial-gradient(70% 60% at 85% 10%, color-mix(in oklab, var(--ground-surface) 85%, white), transparent 70%),
+    radial-gradient(60% 55% at 10% 100%, color-mix(in oklab, var(--ground-bg) 70%, black), transparent 70%),
+    var(--ground-bg);
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "file": "docker.svg",
+    "icon": "logos:docker-icon",
+    "name": "Docker",
+    "kind": "colour",
+    "source": "gilbarbara/logos@d6960edc1b7309d392c76e40d3a320df7f9ff85c",
+    "author": "Gil Barbara",
+    "licence": "CC0-1.0",
+    "url": "https://github.com/gilbarbara/logos",
+    "trademark": true,
+    "markUrl": "https://www.docker.com/"
+  },
+  {
+    "file": "go.svg",
+    "icon": "logos:go",
+    "name": "Go",
+    "kind": "colour",
+    "source": "gilbarbara/logos@d6960edc1b7309d392c76e40d3a320df7f9ff85c",
+    "author": "Gil Barbara",
+    "licence": "CC0-1.0",
+    "url": "https://github.com/gilbarbara/logos",
+    "trademark": true,
+    "markUrl": "https://golang.org/"
+  },
+  {
+    "file": "postgres.svg",
+    "icon": "logos:postgresql",
+    "name": "PostgreSQL",
+    "kind": "colour",
+    "source": "gilbarbara/logos@d6960edc1b7309d392c76e40d3a320df7f9ff85c",
+    "author": "Gil Barbara",
+    "licence": "CC0-1.0",
+    "url": "https://github.com/gilbarbara/logos",
+    "trademark": true,
+    "markUrl": "https://www.postgresql.org/"
+  },
+  {
+    "file": "typesense.svg",
+    "icon": "logos:typesense-icon",
+    "name": "typesense",
+    "kind": "colour",
+    "source": "gilbarbara/logos@d6960edc1b7309d392c76e40d3a320df7f9ff85c",
+    "author": "Gil Barbara",
+    "licence": "CC0-1.0",
+    "url": "https://github.com/gilbarbara/logos",
+    "trademark": true,
+    "markUrl": "https://typesense.org/"
+  },
+  {
+    "file": "vue.svg",
+    "icon": "logos:vue",
+    "name": "Vue.js",
+    "kind": "colour",
+    "source": "gilbarbara/logos@d6960edc1b7309d392c76e40d3a320df7f9ff85c",
+    "author": "Gil Barbara",
+    "licence": "CC0-1.0",
+    "url": "https://github.com/gilbarbara/logos",
+    "trademark": true,
+    "markUrl": "https://vuejs.org/"
+  }
+]
